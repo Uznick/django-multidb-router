@@ -90,4 +90,7 @@ class PinningMasterSlaveRouter(MasterSlaveRouter):
         
         all_reads_to_master = getattr(settings, 'ALL_READS_TO_MASTER', False)
         
-        return DEFAULT_DB_ALIAS if ((this_thread_is_pinned() or all_reads_to_master) else get_slave()
+        if all_reads_to_master is True or this_thread_is_pinned():
+            return DEFAULT_DB_ALIAS
+        
+        return get_slave()
