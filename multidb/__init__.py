@@ -87,4 +87,7 @@ class PinningMasterSlaveRouter(MasterSlaveRouter):
     def db_for_read(self, model, **hints):
         """Send reads to slaves in round-robin unless this thread is "stuck" to
         the master."""
-        return DEFAULT_DB_ALIAS if this_thread_is_pinned() else get_slave()
+        
+        all_reads_to_master = getattr(settings, 'ALL_READS_TO_MASTER', False)
+        
+        return DEFAULT_DB_ALIAS if ((this_thread_is_pinned() or all_reads_to_master) else get_slave()
